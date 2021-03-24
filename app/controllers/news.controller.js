@@ -62,7 +62,7 @@ exports.findAll = (req, res) => {
             element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
          });
        
-        res.send({ status:'200', message: "All the news",news});
+        res.send({ status:200, message: "All the news",news});
     }).catch(err => {
         res.status(500).send({
             message: err.message || "Some error occurred while retrieving news."
@@ -83,7 +83,7 @@ exports.findOne = (req, res) => {
                 message: "News not found with id " + req.params.newsId
             });            
         }
-        res.send({ status:'200',
+        res.send({ status:200,
             message: "News is found with id " + req.params.newsId,news
         });
     }).catch(err => {

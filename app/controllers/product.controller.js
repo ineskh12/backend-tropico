@@ -23,16 +23,12 @@ exports.create = (req, res) => {
             message: "Product Prix can not be empty"
         });
     }
-    if(!req.body.categorieAr) {
+    if(!req.body.categorie) {
         return res.status(400).send({
-            message: "Product categorieAr can not be empty"
+            message: "Product categorie can not be empty"
         });
     }
-    if(!req.body.categorieFr) {
-        return res.status(400).send({
-            message: "Product categorieFr can not be empty"
-        });
-    }
+   
 
     if(!req.body.postedBy) {
         return res.status(400).send({
@@ -48,10 +44,10 @@ exports.create = (req, res) => {
 
 
         prix:req.body.prix,
-        categorieAr:req.body.categorieAr,
+        categorie:req.body.categorie,
 
         
-        categorieFr:req.body.categorieFr,
+        
         postedBy: req.body.postedBy
     });
 

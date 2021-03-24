@@ -58,7 +58,7 @@ exports.findAll = (req, res) => {
         ads.forEach(element => {
            element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
         });
-        res.status(200).json({ status:'200',message: "All the ads",ads});
+        res.status(200).json({ status:200,message: "All the ads",ads});
     }).catch(err => {
         res.status(500).send({
             message: err.message || "Some error occurred while retrieving ads."
@@ -83,7 +83,7 @@ exports.findOne = (req, res) => {
             });            
         }
         ad[0].updatedAt = Math.floor(new Date(ad[0].updatedAt).getTime()/1000);
-        res.status(200).json({ status:'200',
+        res.status(200).json({ status:200,
             message: "Ad is found with id " + req.params.adId,ad
         });
     }).catch(err => {
