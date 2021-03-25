@@ -67,15 +67,32 @@ exports.findAll = (req, res) => {
    
     Product.aggregate([
      
-        { $project: { postedBy: 0, createdAt: 0, __v: 0 } }
+        { $project: {postedBy: 0, createdAt: 0, __v: 0 ,prix:{createdAt: 0,__v: 0, _id:0},categorie:{createdAt: 0,updatedAt:0,__v: 0, _id:0}} }
 
-    ])
-    
-   
+    ]).sort({_id:-1})
     .then(products => {
       
         products.forEach(element => {
+          function round(num,places){
+              num= parseFloat(num);
+              places=(places ? parseInt(places,10):0)
+              if(places > 0){
+                  let  length =places;
+                  places="1"
+                  for (let i =0;i< length;i++){
+                      places+="0";
+                      places= parseInt(places,10);
+
+                  }
+              } else{
+                  places=1
+              }
+              return Math.round((num+Number.EPSILON)*(1*places))/(1*places)
+          }
+          element.pourcentage=round(element.pourcentage,2)
             element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
+            element.prix[0].updatedAt=Math.floor(new Date(element.prix[0].updatedAt).getTime()/1000);
+           
          });
 
         res.send({status:'200', message: "All the products", products});
