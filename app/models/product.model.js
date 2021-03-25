@@ -22,7 +22,7 @@ const ProductSchema = mongoose.Schema({
     pourcentage: {type: Number,default: 0 },
     langue: {type: String,default: 'Ar' },
     postedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-     lastUpdate: Date
+    lastUpdate:{type: Date,default: Date.now() },
 }, {
     timestamps: true
 }, {versionKey: false});

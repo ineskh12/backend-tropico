@@ -61,41 +61,52 @@ exports.create = (req, res) => {
         });
     });
 };
+//roud function
+function round(num,places){
+    num= parseFloat(num);
+    places=(places ? parseInt(places,10):0)
+    if(places > 0){
+        let  length =places;
+        places="1"
+        for (let i =0;i< length;i++){
+            places+="0";
+            places= parseInt(places,10);
 
+        }
+    } else{
+        places=1
+    }
+    return Math.round((num+Number.EPSILON)*(1*places))/(1*places)
+}
 // Retrieve and return all products from the database.
 exports.findAll = (req, res) => {
    
     Product.aggregate([
+       // {$sort:{prix:{"prix":1}}},
      
-        { $project: {postedBy: 0, createdAt: 0, __v: 0 ,prix:{createdAt: 0,__v: 0, _id:0},categorie:{createdAt: 0,updatedAt:0,__v: 0, _id:0}} }
+        { $project: {postedBy: 0, createdAt: 0, __v: 0 ,prix:{createdAt: 0,__v: 0, _id:0},categorie:{createdAt: 0,updatedAt:0,__v: 0, _id:0,}} }
 
-    ]).sort({_id:-1})
+    ]).sort({"lastUpdate":-1})
     .then(products => {
-      
+        
+        lastDate=Math.floor(new Date(products[0].lastUpdate).getTime()/1000); 
         products.forEach(element => {
-          function round(num,places){
-              num= parseFloat(num);
-              places=(places ? parseInt(places,10):0)
-              if(places > 0){
-                  let  length =places;
-                  places="1"
-                  for (let i =0;i< length;i++){
-                      places+="0";
-                      places= parseInt(places,10);
-
-                  }
-              } else{
-                  places=1
-              }
-              return Math.round((num+Number.EPSILON)*(1*places))/(1*places)
-          }
+         
           element.pourcentage=round(element.pourcentage,2)
-            element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
-            element.prix[0].updatedAt=Math.floor(new Date(element.prix[0].updatedAt).getTime()/1000);
-           
+           element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
+           element.lastUpdate = Math.floor(new Date(element.lastUpdate).getTime()/1000);
+          
+           let arrPrix = element.prix
+            arrPrix.forEach(element=>{
+                element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
+                
+                
+            })
+            
+        
          });
 
-        res.send({status:'200', message: "All the products", products});
+        res.send({lastDate,status:200, message: "All the products", products});
     }).catch(err => {
         res.status(500).send({
             message: err.message || "Some error occurred while retrieving products."
@@ -150,7 +161,7 @@ exports.update = (req, res) => {
                             // Find product and update it with the request body
                             Product.findByIdAndUpdate(req.params.productId, {
                             
-                            
+                               lastUpdate:product.updatedAt,
                                 pourcentage: ((product.prix[product.prix.length - 1].prix - product.prix[product.prix.length - 2].prix) /product.prix[product.prix.length - 2].prix) * 100 ,
                             
                                 postedBy: req.body.postedBy
