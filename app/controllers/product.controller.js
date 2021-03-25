@@ -106,7 +106,7 @@ exports.findAll = (req, res) => {
         
          });
 
-        res.send({lastDate,status:200, message: "All the products", products});
+        res.send({status:200,lastDate, message: "All the products", products});
     }).catch(err => {
         res.status(500).send({
             message: err.message || "Some error occurred while retrieving products."
