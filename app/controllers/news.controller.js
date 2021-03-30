@@ -1,5 +1,18 @@
 const News = require('../models/news.model.js');
 const mongoose = require('mongoose');
+
+
+
+exports.findAllfront = (req, res) => {
+    News.find().sort({"updatedAt":-1})
+    .then(news => {
+        res.send(news);
+    }).catch(err => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while retrieving notes."
+        });
+    });
+};
 // Create and Save a new News
 exports.create = (req, res) => {
     // Validate request

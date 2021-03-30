@@ -2,6 +2,8 @@
 const {uploadFile} = require('../../config/single-file-upload');
 module.exports = (app) => {
     const ads = require('../controllers/ad.controller.js');
+    app.get('/ads/all', ads.findAllfront);
+
 
     // Create a new Ad
     app.post('/ads',uploadFile, ads.create);

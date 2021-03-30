@@ -4,7 +4,7 @@ module.exports = (app) => {
     // Create a new product
     app.post('/product', product.create);
     // Retrieve all product with populate
-    app.get('/productwitpopulate', product.findAll);
+    app.get('/product/all', product.findAllfront);
 
 
     // Retrieve all product

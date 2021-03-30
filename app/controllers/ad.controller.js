@@ -1,6 +1,18 @@
 const Ad = require('../models/ad.model.js');
 
 const mongoose = require('mongoose');
+
+exports.findAllfront = (req, res) => {
+    Ad.find().sort({"updatedAt":-1})
+    .then(ad => {
+        res.send(ad);
+    }).catch(err => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while retrieving notes."
+        });
+    });
+};
+
 // Create and Save a new Ad
 exports.create = (req, res) => {
     // Validate request

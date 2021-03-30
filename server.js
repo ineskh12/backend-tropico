@@ -8,12 +8,22 @@ const app = express();
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'public')));
+
+
 // parse application/json
 app.use(bodyParser.json())
 
 // Configuring the database
 const dbConfig = require('./config/database.config.js');
 const mongoose = require('mongoose');
+
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,authorization,content-type');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    next();
+});
 
 mongoose.Promise = global.Promise;
 
@@ -36,7 +46,8 @@ require('./app/routes/ad.routes.js')(app);
 require('./app/routes/user.routes.js')(app);
 require('./app/routes/news.routes.js')(app);
 require('./app/routes/product.routes.js')(app);
+require('./app/routes/service.routes.js')(app);
 // listen for requests
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
     console.log("Server is listening on port 3000");
 });

@@ -18,7 +18,7 @@ const ProductSchema = mongoose.Schema({
         ref: "ProductCategorie",
       },
     ],
-  
+    etat:{type:String, default: 'visible'},
     pourcentage: {type: Number,default: 0 },
     langue: {type: String,default: 'Ar' },
     postedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},

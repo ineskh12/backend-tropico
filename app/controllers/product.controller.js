@@ -78,6 +78,22 @@ function round(num,places){
     }
     return Math.round((num+Number.EPSILON)*(1*places))/(1*places)
 }
+
+exports.findAllfront = (req, res) => {
+    Product.find().sort({"updatedAt":-1})
+    .then(prod => {
+        res.send(prod);
+    }).catch(err => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while retrieving notes."
+        });
+    });
+};
+
+
+
+
+
 // Retrieve and return all products from the database.
 exports.findAll = (req, res) => {
    

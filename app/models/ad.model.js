@@ -6,7 +6,7 @@ const AdSchema = mongoose.Schema({
     image: String,
     langue: {type:String,default:'Ar'},
     postedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-   
+    lastUpdate:{type: Date,default: Date.now() },
 }, {
     timestamps: true
 });
