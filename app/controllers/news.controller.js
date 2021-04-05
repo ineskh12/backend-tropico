@@ -44,7 +44,7 @@ exports.create = (req, res) => {
         
         titre: req.body.titre , 
         image: req.body.image,   url: req.body.url,   externe: req.body.externe,
-        description:req.body.url,categorie:req.body.categorie,
+        description:req.body.description,categorie:req.body.categorie,
         postedBy: req.body.postedBy
     });
 
@@ -61,17 +61,22 @@ exports.create = (req, res) => {
 
 // Retrieve and return all news from the database.
 exports.findAll = (req, res) => {
-   
     News.aggregate([
-     
-        { $project: { postedBy: 0, createdAt: 0, __v: 0} } ,])
+        // {$sort:{prix:{"prix":1}}},
+      
+         { $project: {postedBy: 0, createdAt: 0, __v: 0 ,prix:{createdAt: 0,__v: 0, _id:0},categorie:{createdAt: 0,updatedAt:0,__v: 0, _id:0,}} }
+ 
+     ]).sort({"lastUpdate":-1})
+    
     
     .then(news => {
+         
+        lastDate=Math.floor(new Date(news[0].lastUpdate).getTime()/1000); 
         news.forEach(element => {
             element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
          });
        
-        res.send({ status:200, message: "All the news",news});
+        res.send({ status:200,lastDate, message: "All the news",news});
     }).catch(err => {
         res.status(500).send({
             message: err.message || "Some error occurred while retrieving news."
