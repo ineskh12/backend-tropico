@@ -89,7 +89,7 @@ exports.findOne = (req, res) => {
    
     News.aggregate([
         { $match: { _id: mongoose.Types.ObjectId(req.params.newsId) } },
-        { $project: { postedBy: 0, createdAt: 0, __v: 0 } }
+        { $project: { postedBy: 0,lastUpdate:0, createdAt: 0, __v: 0 } }
     ])
     .then(news => {
        if(!news) {
@@ -97,6 +97,12 @@ exports.findOne = (req, res) => {
                 message: "News not found with id " + req.params.newsId
             });            
         }
+
+        //element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
+      news[0].updatedAt =Math.floor(new Date(news[0].updatedAt ).getTime()/1000);
+console.log(news[0].updatedAt)
+
+                
         res.send({ status:200,
             message: "News is found with id " + req.params.newsId,news
         });
