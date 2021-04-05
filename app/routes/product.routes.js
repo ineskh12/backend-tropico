@@ -13,8 +13,11 @@ module.exports = (app) => {
     // Retrieve a single product with productId
     app.get('/product/:productId', product.findOne);
 
+    app.get('/product/web/:productId', product.findOneWeb);
+
+
     // Update a product with productId
-    app.put('/product/:productId', product.update);
+    app.put('/product/edit/:productId', product.update);
 
     // Delete a product with productId
     app.delete('/product/:productId', product.delete);

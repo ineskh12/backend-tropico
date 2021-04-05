@@ -30,11 +30,7 @@ exports.create = (req, res) => {
         });
     }
 
-    if(!req.body.description) {
-        return res.status(400).send({
-            message: "News Description can not be empty"
-        });
-    }
+   
 
 
     if(!req.body.postedBy) {
@@ -46,9 +42,9 @@ exports.create = (req, res) => {
     // Create  News
     const word = new News({
         
-        titre: req.body.titre || "Untitled News", 
-        image: req.body.image,
-        description:req.body.description,
+        titre: req.body.titre , 
+        image: req.body.image,   url: req.body.url,   externe: req.body.externe,
+        description:req.body.url,categorie:req.body.categorie,
         postedBy: req.body.postedBy
     });
 
@@ -143,9 +139,9 @@ exports.update = (req, res) => {
     // Find News and update it with the request body
     News.findByIdAndUpdate(req.params.newsId, {
        
-        titre: req.body.titre || "Untitled News", 
-        image: req.body.image,
-        description:req.body.description,
+        titre: req.body.titre , 
+        image: req.body.image,   url: req.body.url,   externe: req.body.externe,
+        description:req.body.url,categorie:req.body.categorie,
         postedBy: req.body.postedBy
     }, {new: true})
     .then(word => {

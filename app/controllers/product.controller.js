@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 // Create and Save a new Product
 exports.create = (req, res) => {
     // Validate request
-   
+    console.log(req.body);
 
     if(!req.body.titreAr) {
         return res.status(400).send({
@@ -158,12 +158,36 @@ exports.findOne = (req, res) => {
     });
 };
 
+
+
+// Find a single note with a noteId
+exports.findOneWeb = (req, res) => {
+    Product.findById(req.params.productId)
+    .then(prod => {
+        if(!prod) {
+            return res.status(404).send({
+                message: "product not found with id " + req.params.productId
+            });            
+        }
+        res.send(prod);
+    }).catch(err => {
+        if(err.kind === 'ObjectId') {
+            return res.status(404).send({
+                message: "product not found with id " + req.params.productId
+            });                
+        }
+        return res.status(500).send({
+            message: "Error retrieving product with id " + req.params.productId
+        });
+    });
+};
+
 // Update a product identified by the productId in the request
 exports.update = (req, res) => {
-
+    console.log(req.body);
     Product.findOne({_id :  req.params.productId }).then(
         (product) => {
-                //console.log(req.body);
+                
 
                 const productprice = new ProductPrice();
                 productprice.prix = req.body.prix.prix;

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const ProductPrice = require("./productPrice.model")
-const ProductCategorie = require("./productCategorie.model")
+
 const ProductSchema = mongoose.Schema({
 
     titreAr: String,
@@ -12,12 +12,7 @@ const ProductSchema = mongoose.Schema({
           ref: "ProductPrice",
         },
       ],
-    categorie: [
-      {
-        type: ProductCategorie.schema,
-        ref: "ProductCategorie",
-      },
-    ],
+    categorie: {type: Number,default: 1 },
     etat:{type:String, default: 'visible'},
     pourcentage: {type: Number,default: 0 },
     langue: {type: String,default: 'Ar' },
