@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const AdSchema = mongoose.Schema({
     url: String,
-    externe: Boolean,
+    externe: {type:Boolean,default:true},
     image: String,
     langue: {type:String,default:'Ar'},
     postedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},

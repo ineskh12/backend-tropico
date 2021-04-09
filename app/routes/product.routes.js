@@ -10,6 +10,10 @@ module.exports = (app) => {
     // Retrieve all product
     app.get('/product', product.findAll);
 
+
+    // Retrieve all product cat equals one
+    app.get('/product/legumes', product.findByCat);
+
     // Retrieve a single product with productId
     app.get('/product/:productId', product.findOne);
 
