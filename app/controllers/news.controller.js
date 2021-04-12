@@ -64,7 +64,7 @@ exports.findAll = (req, res) => {
     News.aggregate([
         // {$sort:{prix:{"prix":1}}},
       
-         { $project: {postedBy: 0, createdAt: 0, __v: 0 ,prix:{createdAt: 0,__v: 0, _id:0},categorie:{createdAt: 0,updatedAt:0,__v: 0, _id:0,}} }
+         { $project: {postedBy: 0, __v: 0 } }
  
      ]).sort({"lastUpdate":-1})
     
@@ -73,6 +73,7 @@ exports.findAll = (req, res) => {
          
         lastDate=Math.floor(new Date(news[0].lastUpdate).getTime()/1000); 
         news.forEach(element => {
+            element.createdAt = Math.floor(new Date(element.createdAt).getTime()/1000);
             element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
          });
        
