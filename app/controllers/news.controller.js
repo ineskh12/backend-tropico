@@ -66,7 +66,7 @@ exports.findAll = (req, res) => {
       
          { $project: {postedBy: 0, __v: 0 } }
  
-     ]).sort({"lastUpdate":-1})
+     ]).sort({"updatedAt":-1})
     
     
     .then(news => {
@@ -90,7 +90,7 @@ exports.findOne = (req, res) => {
    
     News.aggregate([
         { $match: { _id: mongoose.Types.ObjectId(req.params.newsId) } },
-        { $project: { postedBy: 0,lastUpdate:0, createdAt: 0, __v: 0 } }
+        { $project: { postedBy: 0,lastUpdate:0, __v: 0 } }
     ])
     .then(news => {
        if(!news) {
@@ -100,6 +100,7 @@ exports.findOne = (req, res) => {
         }
 
         //element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
+        news[0].createdAt =Math.floor(new Date(news[0].createdAt ).getTime()/1000);
       news[0].updatedAt =Math.floor(new Date(news[0].updatedAt ).getTime()/1000);
 console.log(news[0].updatedAt)
 

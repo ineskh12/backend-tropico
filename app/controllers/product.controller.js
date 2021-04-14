@@ -104,15 +104,16 @@ exports.findAll = (req, res) => {
      
         { $project: {postedBy: 0, createdAt: 0, __v: 0 ,prix:{createdAt: 0,__v: 0, _id:0}} }
 
-    ]).sort({"lastUpdate":-1})
+    ]).sort({"updatedAt":-1})
     .then(products => {
         
-        lastDate=Math.floor(new Date(products[0].lastUpdate).getTime()/1000); 
+        lastDate=Math.floor(new Date(products[0].updatedAt).getTime()/1000); 
         products.forEach(element => {
          
           element.pourcentage=round(element.pourcentage,2)
            element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
-           element.lastUpdate = Math.floor(new Date(element.lastUpdate).getTime()/1000);
+           
+           //element.lastUpdate = Math.floor(new Date(element.lastUpdate).getTime()/1000);
           
            let arrPrix = element.prix
             arrPrix.forEach(element=>{
