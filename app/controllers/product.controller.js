@@ -96,8 +96,12 @@ exports.findAllIOS = (req, res) => {
 
        Ad.aggregate([
      
-            { $project: { postedBy: 0, createdAt: 0, __v: 0} } ,
+            { $project: { postedBy: 0, createdAt: 0, __v: 0,lastUpdate:0} } ,
           ]).then((ad) => {
+
+            ad.forEach(element => {
+                element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
+             });
 
             lastDate=Math.floor(new Date(products[0].updatedAt).getTime()/1000); 
         products.forEach(element => {
