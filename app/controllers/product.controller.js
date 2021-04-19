@@ -81,27 +81,7 @@ function round(num,places){
     return Math.round((num+Number.EPSILON)*(1*places))/(1*places)
 }
 
-function getads (req, res){
 
-    
-       
-    Ad.aggregate([
-     
-        { $project: { postedBy: 0, createdAt: 0, __v: 0} } ,
-      ])
-          .then(ads => {
-            res.send({status:200, message: "All the products & Ads",ads});
-            console.log(ads)
-            
-           
-         
-       
-          })
-       
-         
-        
-     
-}
 exports.findAllIOS = (req, res) => {
   
    
