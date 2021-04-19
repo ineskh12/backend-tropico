@@ -1,5 +1,6 @@
 const Product = require('../models/product.model.js');
 const ProductPrice = require("../models/productPrice.model")
+const Ad = require('../models/ad.model.js');
 const mongoose = require('mongoose');
 
 // Create and Save a new Product
@@ -80,17 +81,82 @@ function round(num,places){
     return Math.round((num+Number.EPSILON)*(1*places))/(1*places)
 }
 
-exports.findAllfront = (req, res) => {
-    Product.find().sort({"updatedAt":-1})
-    .then(prod => {
-        res.send(prod);
+function getads (req, res){
+
+    
+       
+    Ad.aggregate([
+     
+        { $project: { postedBy: 0, createdAt: 0, __v: 0} } ,
+      ])
+          .then(ads => {
+            res.send({status:200, message: "All the products & Ads",ads});
+            console.log(ads)
+            
+           
+         
+       
+          })
+       
+         
+        
+     
+}
+exports.findAllIOS = (req, res) => {
+  
+   
+    Product.aggregate([
+        // {$sort:{prix:{"prix":1}}},
+      
+         { $project: {postedBy: 0, createdAt: 0, __v: 0 ,prix:{createdAt: 0,__v: 0, _id:0}} }
+ 
+     ]).sort({"updatedAt":-1})
+    
+    .then(products => {
+
+       Ad.aggregate([
+     
+            { $project: { postedBy: 0, createdAt: 0, __v: 0} } ,
+          ]).then((ad) => {
+
+            lastDate=Math.floor(new Date(products[0].updatedAt).getTime()/1000); 
+        products.forEach(element => {
+         
+          element.pourcentage=round(element.pourcentage,2)
+           element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
+           
+           //element.lastUpdate = Math.floor(new Date(element.lastUpdate).getTime()/1000);
+          
+           let arrPrix = element.prix
+            arrPrix.forEach(element=>{
+                element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
+                
+                
+            })
+            
+        
+         });
+
+            res.send({status:200,lastDate, message: "All the products & Ads", products , ad});
+          }).catch((err) => {
+            return res.status(500).send({
+                message: err.message || "Some error occurred while retrieving ads."
+            });
+          })
+      
+        
+        
+          
+
+        
     }).catch(err => {
-        res.status(500).send({
-            message: err.message || "Some error occurred while retrieving notes."
+        return res.status(500).send({
+            message: err.message || "Some error occurred while retrieving products."
         });
     });
-};
 
+   
+};
 
 
 
@@ -135,41 +201,6 @@ exports.findAll = (req, res) => {
 
 
 
-// Retrieve and return all products from the database.
-exports.findByCat = (req, res) => {
-   
-    Product.aggregate([
-       // {$sort:{prix:{"prix":1}}},
-     
-        { $project: {postedBy: 0, createdAt: 0, __v: 0 ,prix:{createdAt: 0,__v: 0, _id:0  }} }
-
-    ]).sort({"lastUpdate":-1})
-    .then(products => {
-        
-        lastDate=Math.floor(new Date(products[0].lastUpdate).getTime()/1000); 
-        products.forEach(element => {
-         
-          element.pourcentage=round(element.pourcentage,2)
-           element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
-           element.lastUpdate = Math.floor(new Date(element.lastUpdate).getTime()/1000);
-          
-           let arrPrix = element.prix
-            arrPrix.forEach(element=>{
-                element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
-                
-                
-            })
-            
-        
-         });
-
-        res.send({status:200,lastDate, message: "All the products", products});
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || "Some error occurred while retrieving products."
-        });
-    });
-};
 // Find a single product with a productId
 exports.findOne = (req, res) => {
     Product.aggregate([
@@ -208,29 +239,6 @@ exports.findOne = (req, res) => {
     });
 };
 
-
-
-// Find a single note with a noteId
-exports.findOneWeb = (req, res) => {
-    Product.findById(req.params.productId)
-    .then(prod => {
-        if(!prod) {
-            return res.status(404).send({
-                message: "product not found with id " + req.params.productId
-            });            
-        }
-        res.send(prod);
-    }).catch(err => {
-        if(err.kind === 'ObjectId') {
-            return res.status(404).send({
-                message: "product not found with id " + req.params.productId
-            });                
-        }
-        return res.status(500).send({
-            message: "Error retrieving product with id " + req.params.productId
-        });
-    });
-};
 
 // Update a product identified by the productId in the request
 exports.update = (req, res) => {

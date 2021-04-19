@@ -4,20 +4,17 @@ module.exports = (app) => {
     // Create a new product
     app.post('/product', product.create);
     // Retrieve all product with populate
-    app.get('/product/all', product.findAllfront);
+    app.get('/product/all', product.findAllIOS);
 
 
     // Retrieve all product
     app.get('/product', product.findAll);
 
 
-    // Retrieve all product cat equals one
-    app.get('/product/legumes', product.findByCat);
-
+ 
     // Retrieve a single product with productId
     app.get('/product/:productId', product.findOne);
 
-    app.get('/product/web/:productId', product.findOneWeb);
 
 
     // Update a product with productId
