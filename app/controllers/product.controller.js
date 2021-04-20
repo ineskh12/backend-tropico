@@ -163,6 +163,7 @@ exports.findAll = (req, res) => {
           element.pourcentage=round(element.pourcentage,2)
            element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
            
+           
            //element.lastUpdate = Math.floor(new Date(element.lastUpdate).getTime()/1000);
           
            let arrPrix = element.prix
