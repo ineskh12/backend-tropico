@@ -22,30 +22,15 @@ exports.create = (req, res) => {
         });
     }
 
-   
-
-    if(!req.body.image) {
-        return res.status(400).send({
-            message: "Ad Image can not be empty"
-        });
-    }
-
-
-    if(!req.body.postedBy) {
-        return res.status(400).send({
-            message: "Ad postedBy can not be empty"
-        });
-    }
-
     // Create a Ad
     const ad = new Ad({
-        url:req.body.url|| "Untitled Ad",
+        url:req.body.url,
         externe:req.body.externe,
-          image: req.body.image,
+          image:req.file.filename, 
          
-        postedBy: req.body.postedBy
+       // postedBy: req.body.postedBy
     });
-
+    
     // Save Ad in the database
     ad.save()
     .then(data => {
@@ -62,8 +47,8 @@ exports.findAll = (req, res) => {
    
     Ad.aggregate([
      
-        { $project: { postedBy: 0, createdAt: 0, __v: 0} } ,
-      ])
+        { $project: {  createdAt: 0, __v: 0 } },
+      ]).sort({"updatedAt":-1})
     .then(ads => {
         
 
@@ -83,7 +68,7 @@ exports.findOne = (req, res) => {
  
     Ad.aggregate([
         { $match: { _id: mongoose.Types.ObjectId(req.params.adId) } },
-        { $project: { postedBy: 0, createdAt: 0, __v: 0 } }
+        { $project: {  createdAt: 0, __v: 0 } }
     ])
     .then(ad => {
 
@@ -111,36 +96,23 @@ exports.findOne = (req, res) => {
 };
 
 // Update a ad identified by the adId in the request
-exports.update = (req, res) => {
-    // Validate request
-    if(!req.body.url) {
-        return res.status(400).send({
-            message: "Ad Url can not be empty"
-        });
+exports.update = async (req, res) => {
+   const ad = await Ad.findById(req.params.adId);
+
+
+   if (req.body.url !== undefined) {
+        ad.url = req.body.url;
     }
 
-  
-
-    if(!req.body.image) {
-        return res.status(400).send({
-            message: "Ad Image can not be empty"
-        });
+    if (req.body.masquer !== undefined) {
+        ad.masquer = req.body.masquer;
     }
 
-
-    if(!req.body.postedBy) {
-        return res.status(400).send({
-            message: "Ad postedBy can not be empty"
-        });
+    if (req.file !== undefined) {
+        ad.image = req.file.filename;
     }
     // Find ad and update it with the request body
-    Ad.findByIdAndUpdate(req.params.adId, {
-        url:req.body.url,
-        externe:req.body.externe,
-          image: req.body.image,
-         
-        postedBy: req.body.postedBy
-    }, {new: true})
+    ad.save()
     .then(ad => {
         if(!ad) {
             return res.status(404).send({
@@ -161,6 +133,34 @@ exports.update = (req, res) => {
 };
 
 
+
+
+// Update a ad identified by the adId in the request
+exports.masquer = (req, res) => {
+   
+    // Find ad and update it with the request body
+    Ad.findByIdAndUpdate(req.params.adId, {
+        masquer:req.body.masquer,   
+       
+    }, {new: true})
+    .then(ad => {
+        if(!ad) {
+            return res.status(404).send({
+                message: "Ad not found with id " + req.params.adId
+            });
+        }
+        res.send(ad);
+    }).catch(err => {
+        if(err.kind === 'ObjectId') {
+            return res.status(404).send({
+                message: "Ad not found with id " +req.params.adId
+            });                
+        }
+        return res.status(500).send({
+            message: "Error updating ad with id " + req.params.adId
+        });
+    });
+};
 // Delete a ad with the specified adId in the request
 exports.delete = (req, res) => {
     Ad.findByIdAndRemove(req.params.adId)

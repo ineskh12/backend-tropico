@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+
 var path = require('path');
 
 // create express app
@@ -49,6 +50,7 @@ require('./app/routes/ad.routes.js')(app);
 require('./app/routes/user.routes.js')(app);
 require('./app/routes/news.routes.js')(app);
 require('./app/routes/product.routes.js')(app);
+
 
 // listen for requests
 app.listen(process.env.PORT || 3001, () => {

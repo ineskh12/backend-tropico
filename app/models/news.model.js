@@ -8,8 +8,10 @@ const NewsSchema = mongoose.Schema({
     description: {type:String,default:'empty'},
     categorie:{type: Number,default: 1 },
     externe: Boolean,
+    masquer: {type:Boolean,default:false},
     langue: {type:String,default:'Ar'},
-    postedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+
+   // postedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     lastUpdate:{type: Date,default: Date.now() },
 }, {
     timestamps: true

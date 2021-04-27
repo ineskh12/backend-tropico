@@ -1,5 +1,5 @@
 
-const {uploadFile} = require('../../config/single-file-upload');
+const { uploadFile } = require('../../config/upload-image.js');
 module.exports = (app) => {
     const ads = require('../controllers/ad.controller.js');
     app.get('/ads/all', ads.findAllfront);
@@ -15,8 +15,11 @@ module.exports = (app) => {
     app.get('/ads/:adId', ads.findOne);
 
     // Update a Ad with adId
-    app.put('/ads/:adId',uploadFile, ads.update);
+    app.post('/ads/edit/:adId',uploadFile, ads.update);
 
     // Delete a Ad with adId
     app.delete('/ads/:adId', ads.delete);
+     // Delete a Ad with adId
+     app.put('/masquer/:adId', ads.masquer);
+    
 }

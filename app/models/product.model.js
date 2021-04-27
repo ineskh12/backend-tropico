@@ -16,7 +16,7 @@ const ProductSchema = mongoose.Schema({
     etat:{type:String, default: 'visible'},
     pourcentage: {type: Number,default: 0 },
     langue: {type: String,default: 'Ar' },
-    postedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+    //postedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     lastUpdate:{type: Date,default: Date.now() },
 }, {
     timestamps: true

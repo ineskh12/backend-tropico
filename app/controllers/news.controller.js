@@ -15,37 +15,15 @@ exports.findAllfront = (req, res) => {
 };
 // Create and Save a new News
 exports.create = (req, res) => {
-    // Validate request
-   
-
-    if(!req.body.titre) {
-        return res.status(400).send({
-            message: "News titre can not be empty"
-        });
-    }
-
-    if(!req.body.image) {
-        return res.status(400).send({
-            message: "News Image can not be empty"
-        });
-    }
-
-   
-
-
-    if(!req.body.postedBy) {
-        return res.status(400).send({
-            message: "News postedBy can not be empty"
-        });
-    }
+    
 
     // Create  News
     const word = new News({
         
         titre: req.body.titre , 
-        image: req.body.image,   url: req.body.url,   externe: req.body.externe,
+        image: req.file.filename,   url: req.body.url,   externe: req.body.externe,
         description:req.body.description,categorie:req.body.categorie,
-        postedBy: req.body.postedBy
+       // postedBy: req.body.postedBy
     });
 
     // Save News in the database
@@ -64,7 +42,7 @@ exports.findAll = (req, res) => {
     News.aggregate([
         // {$sort:{prix:{"prix":1}}},
       
-         { $project: {postedBy: 0, __v: 0 } }
+         { $project: { __v: 0 } }
  
      ]).sort({"updatedAt":-1})
     
@@ -90,7 +68,7 @@ exports.findOne = (req, res) => {
    
     News.aggregate([
         { $match: { _id: mongoose.Types.ObjectId(req.params.newsId) } },
-        { $project: { postedBy: 0,lastUpdate:0, __v: 0 } }
+        { $project: { lastUpdate:0, __v: 0 } }
     ])
     .then(news => {
        if(!news) {
@@ -102,7 +80,7 @@ exports.findOne = (req, res) => {
         //element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
         news[0].createdAt =Math.floor(new Date(news[0].createdAt ).getTime()/1000);
       news[0].updatedAt =Math.floor(new Date(news[0].updatedAt ).getTime()/1000);
-console.log(news[0].updatedAt)
+
 
                 
         res.send({ status:200,
@@ -120,43 +98,35 @@ console.log(news[0].updatedAt)
     });
 };
 
-// Update a newsId identified by the newsId in the request
-exports.update = (req, res) => {
-    // Validate request
-   
-    if(!req.body.titre) {
-        return res.status(400).send({
-            message: "News titre can not be empty"
-        });
-    }
 
-    if(!req.body.image) {
-        return res.status(400).send({
-            message: "News Image can not be empty"
-        });
-    }
-
-    if(!req.body.description) {
-        return res.status(400).send({
-            message: "News Description can not be empty"
-        });
-    }
-
-
-    if(!req.body.postedBy) {
-        return res.status(400).send({
-            message: "News postedBy can not be empty"
-        });
-    }
-
-    // Find News and update it with the request body
-    News.findByIdAndUpdate(req.params.newsId, {
-       
-        titre: req.body.titre , 
-        image: req.body.image,   url: req.body.url,   externe: req.body.externe,
-        description:req.body.url,categorie:req.body.categorie,
-        postedBy: req.body.postedBy
-    }, {new: true})
+exports.update = async (req, res) => {
+    const word = await News.findById(req.params.adId);
+ 
+    if (req.body.categorie !== undefined) {
+        word.categorie = req.body.categorie;
+     }
+     if (req.body.description !== undefined) {
+        word.description = req.body.description;
+     }
+     if (req.body.externe !== undefined) {
+        word.externe = req.body.externe;
+     }
+    if (req.body.titre !== undefined) {
+        word.titre = req.body.titre;
+     }
+    if (req.body.url !== undefined) {
+        word.url = req.body.url;
+     }
+ 
+     if (req.body.masquer !== undefined) {
+        word.masquer = req.body.masquer;
+     }
+ 
+     if (req.file !== undefined) {
+        word.image = req.file.filename;
+     }
+     // Find ad and update it with the request body
+     word.save()
     .then(word => {
         if(!word) {
             return res.status(404).send({

@@ -31,11 +31,7 @@ exports.create = (req, res) => {
     }
    
 
-    if(!req.body.postedBy) {
-        return res.status(400).send({
-            message: "Product postedBy can not be empty"
-        });
-    }
+    
  
     // Create a Product
     const product = new Product({
@@ -49,7 +45,7 @@ exports.create = (req, res) => {
 
         
         
-        postedBy: req.body.postedBy
+       // postedBy: req.body.postedBy
     });
 
     // Save Product in the database
@@ -88,7 +84,7 @@ exports.findAllIOS = (req, res) => {
     Product.aggregate([
         // {$sort:{prix:{"prix":1}}},
       
-         { $project: {postedBy: 0, createdAt: 0, __v: 0 ,prix:{createdAt: 0,__v: 0, _id:0}} }
+         { $project: { createdAt: 0, __v: 0 ,prix:{createdAt: 0,__v: 0, _id:0}} }
  
      ]).sort({"updatedAt":-1})
     
@@ -96,7 +92,7 @@ exports.findAllIOS = (req, res) => {
 
        Ad.aggregate([
      
-            { $project: { postedBy: 0, createdAt: 0, __v: 0,lastUpdate:0} } ,
+            { $project: {  createdAt: 0, __v: 0,lastUpdate:0} } ,
           ]).then((ad) => {
 
             ad.forEach(element => {
@@ -152,7 +148,7 @@ exports.findAll = (req, res) => {
     Product.aggregate([
        // {$sort:{prix:{"prix":1}}},
      
-        { $project: {postedBy: 0, createdAt: 0, __v: 0 ,prix:{createdAt: 0,__v: 0, _id:0}} }
+        { $project: { createdAt: 0, __v: 0 ,prix:{createdAt: 0,__v: 0, _id:0}} }
 
     ]).sort({"updatedAt":-1})
     .then(products => {
@@ -168,6 +164,7 @@ exports.findAll = (req, res) => {
           
            let arrPrix = element.prix
             arrPrix.forEach(element=>{
+              
                 element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
                 
                 
@@ -190,7 +187,7 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
     Product.aggregate([
         { $match: { _id: mongoose.Types.ObjectId(req.params.productId) } },
-        { $project: { postedBy: 0, createdAt: 0, __v: 0 } }
+        { $project: { createdAt: 0, __v: 0 } }
     ])
     .then(products => {
         if(!products) {
@@ -208,7 +205,7 @@ exports.findOne = (req, res) => {
                 
             })
             
-        console.log(products[0].pourcentage)
+       // console.log(products[0].pourcentage)
         res.status(200).json({ status:'200',
             message: "product is found with id " + req.params.productId,products
         });
@@ -262,7 +259,7 @@ exports.update = (req, res) => {
                                     lastUpdate: product.updatedAt,
                                     pourcentage: ((product.prix[product.prix.length - 1].prix - product.prix[product.prix.length - 2].prix) / product.prix[product.prix.length - 2].prix) * 100,
 
-                                    postedBy: req.body.postedBy
+                                   // postedBy: req.body.postedBy
                                 }, { new: true })
                                     .then(product => {
 
@@ -321,3 +318,8 @@ exports.delete = (req, res) => {
         });
     });
 };
+
+
+  
+
+ 

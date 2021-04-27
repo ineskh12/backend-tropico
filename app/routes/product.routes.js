@@ -1,5 +1,7 @@
 module.exports = (app) => {
     const product = require('../controllers/product.controller.js');
+  
+
 
     // Create a new product
     app.post('/product', product.create);
@@ -10,8 +12,8 @@ module.exports = (app) => {
     // Retrieve all product
     app.get('/product', product.findAll);
 
-
- 
+    // paginiation  
+   
     // Retrieve a single product with productId
     app.get('/product/:productId', product.findOne);
 
