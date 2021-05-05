@@ -20,6 +20,6 @@ module.exports = (app) => {
     // Delete a Ad with adId
     app.delete('/ads/:adId', ads.delete);
      // Delete a Ad with adId
-     app.put('/masquer/:adId', ads.masquer);
+     app.get('/masquer/:adId/:masquer', ads.masquer);
     
 }

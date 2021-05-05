@@ -241,11 +241,15 @@ exports.update = (req, res) => {
             const monthDB = product.prix[product.prix.length - 1].createdAt.getMonth();
             const yearDB = product.prix[product.prix.length - 1].createdAt.getFullYear();
             const outputDB = yearDB + '-' + monthDB + '-' + dayDB;
+            console.log()
 
             //condition to compare date server and date prix in DB
             if (output !== outputDB) {
                 const productprice = new ProductPrice();
-                productprice.prix = req.body.prix.prix;
+                productprice.prix = req.body.prix.prixMoy;
+                productprice.prix = req.body.prix.prixMin;
+                productprice.prix = req.body.prix.prixMax;
+                console.log( productprice)
                 productprice.save()
                     .then((pp) => {
 
@@ -257,7 +261,7 @@ exports.update = (req, res) => {
                                 Product.findByIdAndUpdate(req.params.productId, {
 
                                     lastUpdate: product.updatedAt,
-                                    pourcentage: ((product.prix[product.prix.length - 1].prix - product.prix[product.prix.length - 2].prix) / product.prix[product.prix.length - 2].prix) * 100,
+                                    pourcentage: ((product.prix[product.prix.length - 1].prixMoy - product.prix[product.prix.length - 2].prixMoy / product.prix[product.prix.length - 2].prixMoy) * 100),
 
                                    // postedBy: req.body.postedBy
                                 }, { new: true })
@@ -297,6 +301,34 @@ exports.update = (req, res) => {
 };
 
 
+
+
+exports.editprix = (req, res) => {
+   
+
+ // Find produit and update it with the request body
+    Product.findByIdAndUpdate(req.params.productId, {
+        prix:req.body.prix,
+        
+    }, {new: true})
+    .then(product => {
+        if(!product) {
+            return res.status(404).send({
+                message: "Product not found with id " + req.params.productId
+            });
+        }
+        res.send(product);
+    }).catch(err => {
+        if(err.kind === 'ObjectId') {
+            return res.status(404).send({
+                message: "Product not found with id " +req.params.productId
+            });                
+        }
+        return res.status(500).send({
+            message: "Error updating user with id " + req.params.productId
+        });
+    });
+};
 // Delete a product with the specified productId in the request
 exports.delete = (req, res) => {
     Product.findByIdAndRemove(req.params.productId)

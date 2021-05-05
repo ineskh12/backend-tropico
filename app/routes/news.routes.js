@@ -19,4 +19,6 @@ module.exports = (app) => {
   app.post('/news/edit/:adId',uploadFile, news.update);
     // Delete a News with newsId
     app.delete('/news/:newsId', news.delete);
+
+  app.get('/news/masquer/:newsId/:masquer', news.masquer);
 }

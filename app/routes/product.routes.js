@@ -20,7 +20,8 @@ module.exports = (app) => {
 
 
     // Update a product with productId
-    app.put('/product/edit/:productId', product.update);
+    app.put('/product/addprix/:productId', product.update);
+    app.put('/product/edit/:productId', product.editprix);
 
     // Delete a product with productId
     app.delete('/product/:productId', product.delete);

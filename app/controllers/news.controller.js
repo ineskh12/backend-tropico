@@ -16,12 +16,15 @@ exports.findAllfront = (req, res) => {
 // Create and Save a new News
 exports.create = (req, res) => {
     
-
+   
+       
     // Create  News
     const word = new News({
         
         titre: req.body.titre , 
-        image: req.file.filename,   url: req.body.url,   externe: req.body.externe,
+        image: req.file.filename,  
+        
+     url: req.body.url,   externe: req.body.externe,
         description:req.body.description,categorie:req.body.categorie,
        // postedBy: req.body.postedBy
     });
@@ -29,6 +32,7 @@ exports.create = (req, res) => {
     // Save News in the database
     word.save()
     .then(data => {
+        console.log(data)
         res.send(data);
     }).catch(err => {
         res.status(500).send({
@@ -147,6 +151,7 @@ exports.update = async (req, res) => {
 };
 
 
+
 // Delete a News with the specified newsId in the request
 exports.delete = (req, res) => {
     News.findByIdAndRemove(req.params.newsId)
@@ -165,6 +170,39 @@ exports.delete = (req, res) => {
         }
         return res.status(500).send({
             message: "Could not delete news with id " + req.params.newsId
+        });
+    });
+};
+
+
+
+
+exports.masquer = async(req, res) => {
+    const news = await News.findById(req.params.newsId);
+
+
+
+    if (req.params.masquer !== undefined) {
+        news.masquer = req.params.masquer;
+    }
+
+    // Find ad and update it with the request body
+    news.save()
+    .then(news => {
+        if(!news) {
+            return res.status(404).send({
+                message: "news not found with id " + req.params.newsId
+            });
+        }
+        res.send(news);
+    }).catch(err => {
+        if(err.kind === 'ObjectId') {
+            return res.status(404).send({
+                message: "news not found with id " +req.params.newsId
+            });                
+        }
+        return res.status(500).send({
+            message: "Error updating news with id " + req.params.newsId
         });
     });
 };

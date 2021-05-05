@@ -136,10 +136,37 @@ exports.update = async (req, res) => {
 
 
 // Update a ad identified by the adId in the request
-exports.masquer = (req, res) => {
+exports.masquer = async(req, res) => {
+    const ad = await Ad.findById(req.params.adId);
+
+
+
+    if (req.params.masquer !== undefined) {
+        ad.masquer = req.params.masquer;
+    }
+
+    // Find ad and update it with the request body
+    ad.save()
+    .then(ad => {
+        if(!ad) {
+            return res.status(404).send({
+                message: "Ad not found with id " + req.params.adId
+            });
+        }
+        res.send(ad);
+    }).catch(err => {
+        if(err.kind === 'ObjectId') {
+            return res.status(404).send({
+                message: "Ad not found with id " +req.params.adId
+            });                
+        }
+        return res.status(500).send({
+            message: "Error updating ad with id " + req.params.adId
+        });
+    });
    
     // Find ad and update it with the request body
-    Ad.findByIdAndUpdate(req.params.adId, {
+    /* Ad.findByIdAndUpdate(req.params.adId, {
         masquer:req.body.masquer,   
        
     }, {new: true})
@@ -159,7 +186,7 @@ exports.masquer = (req, res) => {
         return res.status(500).send({
             message: "Error updating ad with id " + req.params.adId
         });
-    });
+    }); */
 };
 // Delete a ad with the specified adId in the request
 exports.delete = (req, res) => {

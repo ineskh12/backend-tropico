@@ -2,7 +2,9 @@ const mongoose = require('mongoose');
 
 const ProductPriceSchema = mongoose.Schema({
 
-    prix: Number
+    prixMin: Number,
+    prixMax: Number,
+    prixMoy: Number
 
 }, {
     timestamps: true

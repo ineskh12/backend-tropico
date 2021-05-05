@@ -3,8 +3,17 @@ const ProductPrice = require("./productPrice.model")
 
 const ProductSchema = mongoose.Schema({
 
-    titreAr: String,
-    titreFr: String,
+    titreAr: {
+      type:String,
+      required: true,
+      unique: true
+     },
+    
+    titreFr: {
+      type:String,
+      required: true,
+      unique: true
+     },
 
     prix: [
         {
