@@ -2,16 +2,16 @@ const Ad = require('../models/ad.model.js');
 
 const mongoose = require('mongoose');
 
-exports.findAllfront = (req, res) => {
-    Ad.find().sort({"updatedAt":-1})
-    .then(ad => {
-        res.send(ad);
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || "Some error occurred while retrieving notes."
-        });
-    });
-};
+// exports.findAllfront = (req, res) => {
+//     Ad.find().sort({"updatedAt":-1})
+//     .then(ad => {
+//         res.send(ad);
+//     }).catch(err => {
+//         res.status(500).send({
+//             message: err.message || "Some error occurred while retrieving notes."
+//         });
+//     });
+// };
 
 // Create and Save a new Ad
 exports.create = (req, res) => {
@@ -44,6 +44,27 @@ exports.create = (req, res) => {
 
 // Retrieve and return all ads from the database.
 exports.findAll = (req, res) => {
+   
+    Ad.aggregate([
+     
+        { $project: {  createdAt: 0, __v: 0 } },
+      ]).match({ masquer:true } ).sort({"updatedAt":-1})
+    .then(ads => {
+        
+
+        ads.forEach(element => {
+           element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
+        });
+        res.status(200).json({ status:200,message: "All the ads",ads});
+    }).catch(err => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while retrieving ads."
+        });
+    });
+};
+
+// Retrieve and return all ads from the database.
+exports.findAllweb = (req, res) => {
    
     Ad.aggregate([
      

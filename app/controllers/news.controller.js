@@ -3,18 +3,9 @@ const mongoose = require('mongoose');
 
 
 
-exports.findAllfront = (req, res) => {
-    News.find().sort({"updatedAt":-1})
-    .then(news => {
-        res.send(news);
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || "Some error occurred while retrieving notes."
-        });
-    });
-};
+
 // Create and Save a new News
-exports.create = (req, res) => {
+exports.create = async(req, res) => {
     
    
        
@@ -42,11 +33,43 @@ exports.create = (req, res) => {
 };
 
 // Retrieve and return all news from the database.
-exports.findAll = (req, res) => {
+exports.findAll = async(req, res) => {
     News.aggregate([
         // {$sort:{prix:{"prix":1}}},
       
          { $project: { __v: 0 } }
+ 
+     ]).match({ masquer:true } ).sort({"updatedAt":-1})
+    
+    
+    .then(news => {
+         
+        lastDate=Math.floor(new Date(news[0].lastUpdate).getTime()/1000); 
+        news.forEach(element => {
+            element.createdAt = Math.floor(new Date(element.createdAt).getTime()/1000);
+            element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
+         });
+       
+        res.send({ status:200,lastDate, message: "All the news",news});
+    }).catch(err => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while retrieving news."
+        });
+    });
+};
+
+
+
+
+// Retrieve and return all news from the database.
+exports.findAllWeb = async(req, res) => {
+    News.aggregate([
+        // {$sort:{prix:{"prix":1}}},
+        //{ $match : { masquer : "false" } },
+         { $project: {  __v: 0 , 
+           
+        
+        } }
  
      ]).sort({"updatedAt":-1})
     
@@ -68,7 +91,7 @@ exports.findAll = (req, res) => {
 };
 
 // Find a single news with a newsId
-exports.findOne = (req, res) => {
+exports.findOne = async(req, res) => {
    
     News.aggregate([
         { $match: { _id: mongoose.Types.ObjectId(req.params.newsId) } },
@@ -153,7 +176,7 @@ exports.update = async (req, res) => {
 
 
 // Delete a News with the specified newsId in the request
-exports.delete = (req, res) => {
+exports.delete = async(req, res) => {
     News.findByIdAndRemove(req.params.newsId)
     .then(word => {
         if(!word) {

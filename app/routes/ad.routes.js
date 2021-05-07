@@ -2,7 +2,7 @@
 const { uploadFile } = require('../../config/upload-image.js');
 module.exports = (app) => {
     const ads = require('../controllers/ad.controller.js');
-    app.get('/ads/all', ads.findAllfront);
+    //app.get('/ads/all', ads.findAllfront);
 
 
     // Create a new Ad
@@ -10,7 +10,8 @@ module.exports = (app) => {
 
     // Retrieve all Ads
     app.get('/ads', ads.findAll);
-
+    // Retrieve all Ads
+    app.get('/ads/web', ads.findAllweb);
     // Retrieve a single Ad with adId
     app.get('/ads/:adId', ads.findOne);
 

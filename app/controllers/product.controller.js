@@ -93,7 +93,7 @@ exports.findAllIOS = (req, res) => {
        Ad.aggregate([
      
             { $project: {  createdAt: 0, __v: 0,lastUpdate:0} } ,
-          ]).then((ad) => {
+          ]).match({ masquer:true } ).sort({"updatedAt":-1}).then((ad) => {
 
             ad.forEach(element => {
                 element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
@@ -331,8 +331,11 @@ exports.editprix = (req, res) => {
 };
 // Delete a product with the specified productId in the request
 exports.delete = (req, res) => {
+
     Product.findByIdAndRemove(req.params.productId)
+  //Product.findByIdAndRemove(req.params.productId)
     .then(product => {
+      console.log(product)
         if(!product) {
             return res.status(404).send({
                 message: "product not found with id " + req.params.productId

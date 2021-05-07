@@ -2,7 +2,7 @@ const { uploadFile } = require('../../config/upload-image.js');
 
 module.exports = (app) => {
     const news = require('../controllers/news.controller.js');
-    app.get('/news/all', news.findAllfront);
+   
 
 
     // Create a new news
@@ -10,6 +10,10 @@ module.exports = (app) => {
 
     // Retrieve all news
     app.get('/news', news.findAll);
+
+
+      // Retrieve all news
+      app.get('/news/web', news.findAllWeb);
 
     // Retrieve a single news with newsId
     app.get('/news/details/:newsId', news.findOne);
