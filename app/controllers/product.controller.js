@@ -335,7 +335,7 @@ exports.delete = (req, res) => {
     Product.findByIdAndRemove(req.params.productId)
   //Product.findByIdAndRemove(req.params.productId)
     .then(product => {
-      console.log(product)
+    
         if(!product) {
             return res.status(404).send({
                 message: "product not found with id " + req.params.productId
