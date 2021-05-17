@@ -7,6 +7,16 @@ const mongoose = require('mongoose');
 // Create and Save a new News
 exports.create = async(req, res) => {
     
+    var serviceAccount = require("/Users/ines/inesprojects/backend-tropico/tropicobackendv2-firebase-adminsdk-ydgb4-0e2505e37a.json");
+    var admin = require("firebase-admin");
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+      //databaseURL: 'https://utap.firebaseio.com'
+    });
+    
+    
+    //var topicName = 'utap'
+   
    
        
     // Create  News
@@ -14,8 +24,7 @@ exports.create = async(req, res) => {
         
         titre: req.body.titre , 
         image: req.file.filename,  
-        
-     url: req.body.url,   externe: req.body.externe,
+        url: req.body.url, externe: req.body.externe,
         description:req.body.description,categorie:req.body.categorie,
        // postedBy: req.body.postedBy
     });
@@ -23,8 +32,37 @@ exports.create = async(req, res) => {
     // Save News in the database
     word.save()
     .then(data => {
-        console.log(data)
+       console.log(data.titre)
+  
         res.send(data);
+         
+       var message = {
+        notification: {
+          title: data.titre,
+          body: 'قم بزيارة التطبيق للمزيد من المعلومات'
+        },
+        data:{
+            type:'news',
+            title: data.titre,
+            body: 'قم بزيارة التطبيق للمزيد من المعلومات'
+        },
+       
+        topic: 'news',
+      };
+
+
+
+    
+      
+    // Send a message to devices subscribed to the provided topic.
+    admin.messaging().send(message)
+    .then((response) => {
+      // Response is a message ID string.
+      console.log('Successfully sent message:', response);
+    })
+    .catch((error) => {
+      console.log('Error sending message:', error);
+    });
     }).catch(err => {
         res.status(500).send({
             message: err.message || "Some error occurred while creating the News."

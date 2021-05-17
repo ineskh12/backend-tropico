@@ -5,6 +5,7 @@ const ProductPriceSchema = mongoose.Schema({
     prixMin: Number,
     prixMax: Number,
     prixMoy: Number
+    
 
 }, {
     timestamps: true

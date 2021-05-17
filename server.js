@@ -65,7 +65,7 @@ require('./app/routes/ad.routes.js')(app);
 require('./app/routes/user.routes.js')(app);
 require('./app/routes/news.routes.js')(app);
 require('./app/routes/product.routes.js')(app);
-
+require('./app/routes/notification.routes.js')(app);
 require("firebase/auth");
 require("firebase/firestore")
 
@@ -79,31 +79,3 @@ app.listen(process.env.PORT || 3001, () => {
 });
 
 
-var serviceAccount = require("/Users/ines/inesprojects/backend-tropico/tropicobackendv2-firebase-adminsdk-ydgb4-0e2505e37a.json");
-var admin = require("firebase-admin");
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  //databaseURL: 'https://utap.firebaseio.com'
-});
-
-
-var topicName = 'utap'
-
-var message = {
-  notification: {
-    title: '`utaptest',
-    body: 'test test'
-  },
- 
-  topic: topicName,
-};
-
-// Send a message to devices subscribed to the provided topic.
-admin.messaging().send(message)
-  .then((response) => {
-    // Response is a message ID string.
-    console.log('Successfully sent message:', response);
-  })
-  .catch((error) => {
-    console.log('Error sending message:', error);
-  });

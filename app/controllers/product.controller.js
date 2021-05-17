@@ -8,32 +8,7 @@ exports.create = (req, res) => {
     // Validate request
     console.log(req.body);
 
-    if(!req.body.titreAr) {
-        return res.status(400).send({
-            message: "Product titreAr can not be empty"
-        });
-    }
-
-    if(!req.body.titreFr) {
-        return res.status(400).send({
-            message: "Product titreFr can not be empty"
-        });
-    }
-    if(!req.body.prix) {
-        return res.status(400).send({
-            message: "Product Prix can not be empty"
-        });
-    }
-    if(!req.body.categorie) {
-        return res.status(400).send({
-            message: "Product categorie can not be empty"
-        });
-    }
-   
-
-    
- 
-    // Create a Product
+   // Create a Product
     const product = new Product({
     
         titreAr: req.body.titreAr ,
@@ -241,15 +216,11 @@ exports.update = (req, res) => {
             const monthDB = product.prix[product.prix.length - 1].createdAt.getMonth();
             const yearDB = product.prix[product.prix.length - 1].createdAt.getFullYear();
             const outputDB = yearDB + '-' + monthDB + '-' + dayDB;
-            console.log()
 
             //condition to compare date server and date prix in DB
             if (output !== outputDB) {
                 const productprice = new ProductPrice();
-                productprice.prix = req.body.prix.prixMoy;
-                productprice.prix = req.body.prix.prixMin;
-                productprice.prix = req.body.prix.prixMax;
-                console.log( productprice)
+                productprice.prix = req.body.prix.prix;
                 productprice.save()
                     .then((pp) => {
 
@@ -261,9 +232,9 @@ exports.update = (req, res) => {
                                 Product.findByIdAndUpdate(req.params.productId, {
 
                                     lastUpdate: product.updatedAt,
-                                    pourcentage: ((product.prix[product.prix.length - 1].prixMoy - product.prix[product.prix.length - 2].prixMoy / product.prix[product.prix.length - 2].prixMoy) * 100),
+                                    pourcentage: ((product.prix[product.prix.length - 1].prix - product.prix[product.prix.length - 2].prix) / product.prix[product.prix.length - 2].prix) * 100,
 
-                                   // postedBy: req.body.postedBy
+                                    postedBy: req.body.postedBy
                                 }, { new: true })
                                     .then(product => {
 
@@ -299,6 +270,72 @@ exports.update = (req, res) => {
 
 
 };
+
+
+
+
+
+exports.updatev2 = (req, res) => {
+    console.log(req.body);
+    Product.findOne({ _id: req.params.productId }).then(
+        (product) => {
+            //initiate date server
+            const dateObj = new Date();
+
+            //Date server
+            const month = dateObj.getMonth();
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            const year = dateObj.getFullYear();
+            const output = year + '-' + month + '-' + day;
+
+            //Date prix in DB
+            const dayDB = String(product.prix[product.prix.length - 1].createdAt.getDate()).padStart(2, '0');
+            const monthDB = product.prix[product.prix.length - 1].createdAt.getMonth();
+            const yearDB = product.prix[product.prix.length - 1].createdAt.getFullYear();
+            const outputDB = yearDB + '-' + monthDB + '-' + dayDB;
+
+            //condition to compare date server and date prix in DB
+            if (output !== outputDB) {
+                console.log('test')
+                // const productprice = new ProductPrice();
+                // productprice.prix = req.body.prix.prixMoy;
+                // console.log(productprice)
+               // productprice.save()
+               Product.findByIdAndUpdate(req.params.productId, {
+                prix:req.body.prix,
+              
+            }, {new: true})
+            .then(product => {
+                if(!product) {
+                    return res.status(404).send({
+                        message: "Product not found with id " + req.params.productId
+                    });
+                }
+                res.send(product);
+            }).catch(err => {
+                if(err.kind === 'ObjectId') {
+                    return res.status(404).send({
+                        message: "Product not found with id " +req.params.productId
+                    });                
+                }
+                return res.status(500).send({
+                    message: "Error updating user with id " + req.params.productId
+                });
+            });
+            } else {
+               
+                return res.status(404).send({
+                    message: "product can't update price today ! "
+                });
+            }
+        }
+    )
+
+
+
+};
+
+
 
 
 
