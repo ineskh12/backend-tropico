@@ -199,9 +199,9 @@ exports.findOne = (req, res) => {
 
 // Update a product identified by the productId in the request
 exports.update = (req, res) => {
-    console.log(req.body);
+    console.log(req.body.prixMin);
     Product.findOne({ _id: req.params.productId }).then(
-        (product) => {
+        async (product) => {
             //initiate date server
             const dateObj = new Date();
 
@@ -218,8 +218,34 @@ exports.update = (req, res) => {
             const outputDB = yearDB + '-' + monthDB + '-' + dayDB;
 
             //condition to compare date server and date prix in DB
-            if (output !== outputDB) {
-                const productprice = new ProductPrice();
+            if (output === outputDB) {
+
+                if(req.body.prixMin !== undefined)
+                product.prix[product.prix.length - 1].prixMin = req.body.prixMin;
+
+                if(req.body.prixMax !== undefined)
+                product.prix[product.prix.length - 1].prixMax = req.body.prixMax;
+
+                if(req.body.prixMoy !== undefined){
+                product.prix[product.prix.length - 1].prixMoy = req.body.prixMoy;
+
+                if(product.prix.length > 1)
+                product.pourcentage = ((product.prix[product.prix.length - 1].prixMoy - product.prix[product.prix.length - 2].prixMoy) / product.prix[product.prix.length - 2].prixMoy) * 100      
+            }
+                
+                product.save().then(
+                    ProductSave => {
+                        return res.status(200).json({message : 'Product price updated', product: ProductSave})
+                    }
+                ).catch(
+                    (e) => {
+                   
+                        return res.status(404).send('error' + e.message)
+                    
+                    }
+                )
+                
+                /* const productprice = new ProductPrice();
                 productprice.prix = req.body.prix.prix;
                 productprice.save()
                     .then((pp) => {
@@ -258,75 +284,40 @@ exports.update = (req, res) => {
                             }
                         )
 
-                    })
+                    }) */
             } else {
-                return res.status(404).send({
-                    message: "product can't update price today ! "
-                });
-            }
-        }
-    )
 
+                const productprice = new ProductPrice();
 
+                if(req.body.prixMin)
+                productprice.prixMin = req.body.prixMin;
 
-};
+                if(req.body.prixMax)
+                productprice.prixMax = req.body.prixMax;
 
+                if(req.body.prixMoy)
+                productprice.prixMoy = req.body.prixMoy;
 
+                await productprice.save().then(
+                    (pp) =>  product.prix.push(pp)
+                );
 
-
-
-exports.updatev2 = (req, res) => {
-    console.log(req.body);
-    Product.findOne({ _id: req.params.productId }).then(
-        (product) => {
-            //initiate date server
-            const dateObj = new Date();
-
-            //Date server
-            const month = dateObj.getMonth();
-            const day = String(dateObj.getDate()).padStart(2, '0');
-            const year = dateObj.getFullYear();
-            const output = year + '-' + month + '-' + day;
-
-            //Date prix in DB
-            const dayDB = String(product.prix[product.prix.length - 1].createdAt.getDate()).padStart(2, '0');
-            const monthDB = product.prix[product.prix.length - 1].createdAt.getMonth();
-            const yearDB = product.prix[product.prix.length - 1].createdAt.getFullYear();
-            const outputDB = yearDB + '-' + monthDB + '-' + dayDB;
-
-            //condition to compare date server and date prix in DB
-            if (output !== outputDB) {
-                console.log('test')
-                // const productprice = new ProductPrice();
-                // productprice.prix = req.body.prix.prixMoy;
-                // console.log(productprice)
-               // productprice.save()
-               Product.findByIdAndUpdate(req.params.productId, {
-                prix:req.body.prix,
-              
-            }, {new: true})
-            .then(product => {
-                if(!product) {
-                    return res.status(404).send({
-                        message: "Product not found with id " + req.params.productId
-                    });
-                }
-                res.send(product);
-            }).catch(err => {
-                if(err.kind === 'ObjectId') {
-                    return res.status(404).send({
-                        message: "Product not found with id " +req.params.productId
-                    });                
-                }
-                return res.status(500).send({
-                    message: "Error updating user with id " + req.params.productId
-                });
-            });
-            } else {
                
+                product.pourcentage = ((product.prix[product.prix.length - 1].prixMoy - product.prix[product.prix.length - 2].prixMoy) / product.prix[product.prix.length - 2].prixMoy) * 100
+
+                        product.save().then(
+                            (p) => {
+                                return res.status(200).json({
+                                    message: 'price added succesfully',
+                                    p
+                                })
+                            }
+                        );
+                
+                 /* console.log('test')
                 return res.status(404).send({
                     message: "product can't update price today ! "
-                });
+                }); */
             }
         }
     )
@@ -338,58 +329,62 @@ exports.updatev2 = (req, res) => {
 
 
 
-
-
-exports.editprix = (req, res) => {
-   
-
- // Find produit and update it with the request body
-    Product.findByIdAndUpdate(req.params.productId, {
-        prix:req.body.prix,
-        
-    }, {new: true})
-    .then(product => {
-        if(!product) {
-            return res.status(404).send({
-                message: "Product not found with id " + req.params.productId
-            });
-        }
-        res.send(product);
-    }).catch(err => {
-        if(err.kind === 'ObjectId') {
-            return res.status(404).send({
-                message: "Product not found with id " +req.params.productId
-            });                
-        }
-        return res.status(500).send({
-            message: "Error updating user with id " + req.params.productId
-        });
-    });
-};
 // Delete a product with the specified productId in the request
 exports.delete = (req, res) => {
 
-    Product.findByIdAndRemove(req.params.productId)
-  //Product.findByIdAndRemove(req.params.productId)
-    .then(product => {
-    
-        if(!product) {
-            return res.status(404).send({
-                message: "product not found with id " + req.params.productId
+    Product.findById(req.params.productId).then(
+        (product) => {
+            product.prix.forEach(prix => {
+                ProductPrice.deleteOne({ _id: prix._id }).catch(
+                    (e) => {
+                        return res.status(404).json({
+                            message: 'product price delete error'
+                        })
+                    }
+                )
             });
+
+            Product.deleteOne({_id: req.params.productId}).then(
+                () => {
+                    return res.status(200).json({
+                        message: 'product deleted ! '
+                    })
+                }
+            ).catch(
+                (e) => {
+                    return res.status(404).json({
+                        message: 'product delete error'
+                    })
+                }
+            )
         }
-        res.send({message: "product deleted successfully!"});
-    }).catch(err => {
-        if(err.kind === 'ObjectId' || err.name === 'NotFound') {
-            return res.status(404).send({
-                message: "product not found with id " + req.params.productId
-            });                
-        }
-        return res.status(500).send({
-            message: "Could not delete product with id " + req.params.productId
-        });
-    });
+    )
+
+//     Product.findByIdAndRemove(req.params.productId)
+//   //Product.findByIdAndRemove(req.params.productId)
+//     .then(product => {
+    
+//         if(!product) {
+//             return res.status(404).send({
+//                 message: "product not found with id " + req.params.productId
+//             });
+//         }
+//         res.send({message: "product deleted successfully!"});
+//     }).catch(err => {
+//         if(err.kind === 'ObjectId' || err.name === 'NotFound') {
+//             return res.status(404).send({
+//                 message: "product not found with id " + req.params.productId
+//             });                
+//         }
+//         return res.status(500).send({
+//             message: "Could not delete product with id " + req.params.productId
+//         });
+//     });
 };
+
+
+
+
 
 
   
