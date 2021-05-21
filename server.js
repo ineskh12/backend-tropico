@@ -1,4 +1,6 @@
-const express = require('express');
+const express = require("express");
+const helmet = require("helmet");
+
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
@@ -19,6 +21,7 @@ var path = require('path');
 
 // create express app
 const app = express();
+app.use(helmet());
 
 
 
