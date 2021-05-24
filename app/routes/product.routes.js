@@ -11,9 +11,14 @@ module.exports = (app) => {
 
     // Retrieve all product
     app.get('/product', product.findAll);
+   // Retrieve all product(elfalah )
+   app.get('/productFalah', product.findAllFalah);
 
-    // paginiation  
-   
+   // Retrieve all product(non elfaleh)
+  // app.get('/productNonFalah', product.findAllNonFalah);
+
+
+ 
     // Retrieve a single product with productId
     app.get('/product/:productId', product.findOne);
 

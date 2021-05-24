@@ -158,6 +158,51 @@ exports.findAll = (req, res) => {
 
 
 
+// Retrieve and return all products from the database they have Falah 
+
+exports.findAllFalah = (req, res) => {
+  
+
+   
+    Product.aggregate([
+        // {$sort:{prix:{"prix":1}}},
+      
+         { $project: { createdAt: 0, __v: 0 } ,prix:{createdAt: 0,__v: 0, _id:0}}
+
+ 
+     ]).sort({"updatedAt":-1})
+    .then(products => {
+        
+        lastDate=Math.floor(new Date(products[0].updatedAt).getTime()/1000); 
+        products.forEach(element => {
+         
+          element.pourcentage=round(element.pourcentage,2)
+           element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
+           
+           
+           //element.lastUpdate = Math.floor(new Date(element.lastUpdate).getTime()/1000);
+          
+           let arrPrix = element.prix
+            arrPrix.forEach(element=>{
+              
+                element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
+                
+                
+            })
+            
+        
+         });
+
+        res.send({status:200,lastDate, message: "All the products", products});
+    }).catch(err => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while retrieving products."
+        });
+    });
+};
+
+
+
 // Find a single product with a productId
 exports.findOne = (req, res) => {
     Product.aggregate([

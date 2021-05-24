@@ -3,7 +3,8 @@ const helmet = require("helmet");
 
 const bodyParser = require('body-parser');
 const cors = require('cors');
-
+const dotenv = require('dotenv').config()
+console.log(dotenv.parsed)
 var firebase = require("firebase/app");
 var sys=  require('util')
 const firebaseConfig = {
@@ -34,8 +35,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json())
 
 // Configuring the database
-const dbConfig = require('./config/database.config.js');
+
 const mongoose = require('mongoose');
+
 
 app.use(cors());
 app.use((req, res, next) => {
@@ -48,9 +50,8 @@ app.use((req, res, next) => {
 });
 
 mongoose.Promise = global.Promise;
-
 // Connecting to the database
-mongoose.connect(dbConfig.url, {
+mongoose.connect(process.env.Url, {
     useNewUrlParser: true,useUnifiedTopology:true,useCreateIndex:true,useFindAndModify:false
 }).then(() => {
     console.log("Successfully connected to the database");    
@@ -72,7 +73,7 @@ require('./app/routes/notification.routes.js')(app);
 require('./app/routes/auth.routes.js')(app);
 require("firebase/auth");
 require("firebase/firestore")
-
+console.log(process.env.PORT)
 
 // listen for requests
 app.listen(process.env.PORT || 3001, () => {
