@@ -53,9 +53,10 @@ exports.findAll = (req, res) => {
         
 
         ads.forEach(element => {
+            lastDate=Math.floor(new Date(ads[0].updatedAt).getTime()/1000); 
            element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
         });
-        res.status(200).json({ status:200,message: "All the ads",ads});
+        res.status(200).json({ status:200,lastDate,message: "All the ads",ads});
     }).catch(err => {
         res.status(500).send({
             message: err.message || "Some error occurred while retrieving ads."

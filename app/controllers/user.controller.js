@@ -157,7 +157,7 @@ exports.login = (req, res) => {
             if(user[0]){
                 if(req.body.motdepasse === user[0].motdepasse){
                     //delete user[0]['motdepasse'];
-                    console.log(user[0]);
+                   // console.log(user[0]);
                    
                     return res.status(200).json({user});
                     

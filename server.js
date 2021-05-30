@@ -4,7 +4,7 @@ const helmet = require("helmet");
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv').config()
-console.log(dotenv.parsed)
+//console.log(dotenv.parsed)
 var firebase = require("firebase/app");
 var sys=  require('util')
 const firebaseConfig = {
@@ -16,8 +16,14 @@ const firebaseConfig = {
     appId: "1:112097654724:web:9d13976eed8de6614ed691",
     measurementId: "G-519HW39T1P"
   };
-  firebase.initializeApp(firebaseConfig);
-console.log('hi ines')
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+ }else {
+    firebase.app(); // if already initialized, use that one
+ }
+ // firebase.initializeApp(firebaseConfig);
+//console.log('hi ines')
 var path = require('path');
 
 // create express app
@@ -73,7 +79,7 @@ require('./app/routes/notification.routes.js')(app);
 require('./app/routes/auth.routes.js')(app);
 require("firebase/auth");
 require("firebase/firestore")
-console.log(process.env.PORT)
+//console.log(process.env.PORT)
 
 // listen for requests
 app.listen(process.env.PORT || 3001, () => {

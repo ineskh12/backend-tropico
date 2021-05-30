@@ -23,7 +23,7 @@ exports.create = async(req, res) => {
  
     notif.save()
     .then(data => {
-       console.log(data.title)
+      // console.log(data.title)
   
         res.send(data);
          

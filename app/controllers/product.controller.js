@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 // Create and Save a new Product
 exports.create = (req, res) => {
     // Validate request
-    console.log(req.body);
+    //console.log(req.body);
 
    // Create a Product
     const product = new Product({
@@ -26,7 +26,7 @@ exports.create = (req, res) => {
     // Save Product in the database
     product.save()
     .then(data => {
-        console.log(data)
+        //console.log(data)
         res.send(data);
     }).catch(err => {
         res.status(500).send({
@@ -68,12 +68,13 @@ exports.findAllIOS = (req, res) => {
        Ad.aggregate([
      
             { $project: {  createdAt: 0, __v: 0,lastUpdate:0} } ,
-          ]).match({ masquer:true } ).sort({"updatedAt":-1}).then((ad) => {
-
+          ]).match({ masquer:false } ).sort({"updatedAt":-1}).then((ad) => {
+    
+            lastDateAd=Math.floor(new Date(ad[0].updatedAt).getTime()/1000); 
             ad.forEach(element => {
                 element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
              });
-
+            
             lastDate=Math.floor(new Date(products[0].updatedAt).getTime()/1000); 
         products.forEach(element => {
          
@@ -92,7 +93,7 @@ exports.findAllIOS = (req, res) => {
         
          });
 
-            res.send({status:200,lastDate, message: "All the products & Ads", products , ad});
+            res.send({status:200,lastDate, message: "All the products & Ads", products ,lastDateAd, ad});
           }).catch((err) => {
             return res.status(500).send({
                 message: err.message || "Some error occurred while retrieving ads."
@@ -167,8 +168,8 @@ exports.findAllFalah = (req, res) => {
     Product.aggregate([
         // {$sort:{prix:{"prix":1}}},
       
-         { $project: { createdAt: 0, __v: 0 } ,prix:{createdAt: 0,__v: 0, _id:0}}
-
+         { $project: { createdAt: 0, __v: 0 }},
+         { $project: { prix:{createdAt: 0,__v: 0, _id:0}} }
  
      ]).sort({"updatedAt":-1})
     .then(products => {
@@ -183,13 +184,16 @@ exports.findAllFalah = (req, res) => {
            //element.lastUpdate = Math.floor(new Date(element.lastUpdate).getTime()/1000);
           
            let arrPrix = element.prix
+           
             arrPrix.forEach(element=>{
               
                 element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
                 
                 
             })
-            
+          element.prix = element.prix.reverse().slice(0,7)
+            //element.prix = element.prix.slice(-2)
+          
         
          });
 
@@ -201,6 +205,51 @@ exports.findAllFalah = (req, res) => {
     });
 };
 
+
+
+exports.findAllNonFalah = (req, res) => {
+  
+
+   
+    Product.aggregate([
+        // {$sort:{prix:{"prix":1}}},
+      
+         { $project: { createdAt: 0, __v: 0 }},
+         { $project: { prix:{createdAt: 0,__v: 0, _id:0}} }
+ 
+     ]).sort({"updatedAt":-1})
+    .then(products => {
+        
+        lastDate=Math.floor(new Date(products[0].updatedAt).getTime()/1000); 
+        products.forEach(element => {
+         
+          element.pourcentage=round(element.pourcentage,2)
+           element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
+           
+           
+           //element.lastUpdate = Math.floor(new Date(element.lastUpdate).getTime()/1000);
+          
+           let arrPrix = element.prix
+           
+            arrPrix.forEach(element=>{
+              
+                element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);
+                
+                
+            })
+          element.prix = element.prix.reverse().slice(0,4)
+            //element.prix = element.prix.slice(-2)
+          
+        
+         });
+
+        res.send({status:200,lastDate, message: "All the products", products});
+    }).catch(err => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while retrieving products."
+        });
+    });
+};
 
 
 // Find a single product with a productId
@@ -244,7 +293,7 @@ exports.findOne = (req, res) => {
 
 // Update a product identified by the productId in the request
 exports.update = (req, res) => {
-    console.log(req.body.prixMin);
+    //console.log(req.body.prixMin);
     Product.findOne({ _id: req.params.productId }).then(
         async (product) => {
             //initiate date server

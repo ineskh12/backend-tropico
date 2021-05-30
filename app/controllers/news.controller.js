@@ -2,25 +2,17 @@ const News = require('../models/news.model.js');
 const mongoose = require('mongoose');
 
 
-
+var serviceAccount = require("/Users/ines/inesprojects/backend-tropico/tropicobackendv2-firebase-adminsdk-ydgb4-0e2505e37a.json");
+    var admin = require("firebase-admin");
+    // admin.initializeApp({
+    //   credential: admin.credential.cert(serviceAccount),
+    //   //databaseURL: 'https://utap.firebaseio.com'
+    // });
 
 // Create and Save a new News
 exports.create = async(req, res) => {
     
-    var serviceAccount = require("/Users/ines/inesprojects/backend-tropico/tropicobackendv2-firebase-adminsdk-ydgb4-0e2505e37a.json");
-    var admin = require("firebase-admin");
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-      //databaseURL: 'https://utap.firebaseio.com'
-    });
-    
-    
-    //var topicName = 'utap'
-   
-   
-       
-    // Create  News
-    const word = new News({
+      const word = new News({
         
         titre: req.body.titre , 
         image: req.file.filename,  
@@ -32,7 +24,7 @@ exports.create = async(req, res) => {
     // Save News in the database
     word.save()
     .then(data => {
-       console.log(data.titre)
+       //console.log(data.titre)
   
         res.send(data);
          
@@ -77,12 +69,12 @@ exports.findAll = async(req, res) => {
       
          { $project: { __v: 0 } }
  
-     ]).match({ masquer:true } ).sort({"updatedAt":-1})
+     ]).match({ masquer:false } ).sort({"updatedAt":-1})
     
     
     .then(news => {
          
-        lastDate=Math.floor(new Date(news[0].lastUpdate).getTime()/1000); 
+        lastDate=Math.floor(new Date(news[0].updatedAt).getTime()/1000); 
         news.forEach(element => {
             element.createdAt = Math.floor(new Date(element.createdAt).getTime()/1000);
             element.updatedAt = Math.floor(new Date(element.updatedAt).getTime()/1000);

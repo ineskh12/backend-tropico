@@ -15,7 +15,7 @@ module.exports = (app) => {
    app.get('/productFalah', product.findAllFalah);
 
    // Retrieve all product(non elfaleh)
-  // app.get('/productNonFalah', product.findAllNonFalah);
+   app.get('/productNonFalah', product.findAllNonFalah);
 
 
  
