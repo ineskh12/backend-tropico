@@ -1,7 +1,6 @@
 const bodyParser = require('body-parser');
 const User = require('../models/user.model.js');
 
-
 // Create and Save a new User
 exports.create = (req, res) => {
     // Validate request
@@ -98,10 +97,6 @@ exports.update = (req, res) => {
             message: "User Role can not be empty"
         });
     }
-
-   
-
-
     // Find user and update it with the request body
     User.findByIdAndUpdate(req.params.userId, {
         email:req.body.email,
@@ -126,7 +121,6 @@ exports.update = (req, res) => {
         });
     });
 };
-
 
 // Delete a user with the specified userId in the request
 exports.delete = (req, res) => {
@@ -155,12 +149,8 @@ exports.login = (req, res) => {
     .then(
         user => {
             if(user[0]){
-                if(req.body.motdepasse === user[0].motdepasse){
-                    //delete user[0]['motdepasse'];
-                   // console.log(user[0]);
-                   
+                if(req.body.motdepasse === user[0].motdepasse){                   
                     return res.status(200).json({user});
-                    
                 }
             }
             return res.status(404).json({message : 'user doesn\'t exist'});
