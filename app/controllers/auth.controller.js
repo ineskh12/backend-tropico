@@ -11,10 +11,11 @@ exports.create = async (req, res) => {
     platfrom = 'platform'
     username = 'mme'
     password = 'mme@2021'
-    offer = 'Alfalleh'
-    baseUrl = 'https://10.25.29.67:9090'
+    operationType = 'offer'
+    criteria= 'Alfalleh'
+    baseUrl = 'https://10.25.29.67:90/check-offer-1.0.0'
 
-    url = `${baseUrl}/checkCustomerEligibility?msisdn=${msisdn}&offer=${offer}`
+    url = `${baseUrl}/checkCustomerEligibility?msisdn=${msisdn}&operationType=${operationType}&criteria=${criteria}`
     header = {
         headers: {
             password: password,
