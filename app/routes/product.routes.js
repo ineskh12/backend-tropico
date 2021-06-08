@@ -1,19 +1,19 @@
 module.exports = (app) => {
     const product = require('../controllers/product.controller.js');
     // Create a new product
-    app.post('/product', product.create);
+    app.post('/api/product', product.create);
     // Retrieve all product with populate
-    app.get('/product/all', product.findAllIOS);
+    app.get('/api/product/all', product.findAllIOS);
     // Retrieve all product
-    app.get('/product', product.findAll);
+    app.get('/api/product', product.findAll);
     // Retrieve all product(elfalah )
-    app.get('/productFalah', product.findAllFalah);
+    app.get('/api/productFalah', product.findAllFalah);
     // Retrieve all product(non elfaleh)
-    app.get('/productNonFalah', product.findAllNonFalah);
+    app.get('/api/productNonFalah', product.findAllNonFalah);
     // Retrieve a single product with productId
-    app.get('/product/:productId', product.findOne);
+    app.get('/api/product/:productId', product.findOne);
     // Update a product with productId
-    app.put('/product/update/:productId', product.update);
+    app.put('/api/product/update/:productId', product.update);
     // Delete a product with productId
-    app.delete('/product/:productId', product.delete);
+    app.delete('/api/product/:productId', product.delete);
 }
