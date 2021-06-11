@@ -115,7 +115,6 @@ exports.findAllIOS = (req, res) => {
  * @param {Response} res 
  */
 exports.findAll = (req, res) => {
-
     Product.aggregate([
         {
             $project: {
@@ -140,7 +139,7 @@ exports.findAll = (req, res) => {
                     element.updatedAt = Math.floor(new Date(element.updatedAt).getTime() / 1000);
                 })
             });
-            res.send({ status: 200, lastDate, message: "All the products", products });
+            res.json({ status: 200, lastDate, message: "All the products", products });
         }).catch(err => {
             res.status(500).send({
                 message: err.message || "Some error occurred while retrieving products."

@@ -1,6 +1,6 @@
 const express = require("express");
 const helmet = require("helmet");
-
+const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 require('dotenv').config()
@@ -33,6 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // parse application/json
 app.use(bodyParser.json())
+app.use(morgan('combined'))
 
 // Configuring the database
 
@@ -50,7 +51,9 @@ app.use((req, res, next) => {
 
 mongoose.Promise = global.Promise;
 // Connecting to the database
-mongoose.connect(process.env.Url, {
+console.log(`mongodb://${process.env.USER}:${encodeURIComponent(process.env.PASSWORD)}@localhost:27017/utap`)
+mongoose.connect(`mongodb://localhost:27017/utap`,
+ {
     useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false
 }).then(() => {
     console.log("Successfully connected to the database");
@@ -60,7 +63,7 @@ mongoose.connect(process.env.Url, {
 });
 
 // define a simple route
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
     res.json({ "message": "Welcome to Utap application." });
 });
 

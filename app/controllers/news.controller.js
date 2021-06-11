@@ -80,7 +80,7 @@ exports.findAll = async (req, res) => {
  * @param {Response} res 
  */
 exports.findAllWeb = async (req, res) => {
-    News.aggregate([
+   News.aggregate([
         {
             $project: {
                 __v: 0,
@@ -88,14 +88,14 @@ exports.findAllWeb = async (req, res) => {
         }
     ]).sort({ "updatedAt": -1 })
         .then(news => {
-
-            lastDate = Math.floor(new Date(news[0].lastUpdate).getTime() / 1000);
+		if(news){
+           // lastDate = Math.floor(new Date(news[0].lastUpdate).getTime() / 1000);
             news.forEach(element => {
                 element.createdAt = Math.floor(new Date(element.createdAt).getTime() / 1000);
                 element.updatedAt = Math.floor(new Date(element.updatedAt).getTime() / 1000);
             });
-
-            res.send({ status: 200, lastDate, message: "All the news", news });
+}
+            res.send({ status: 200,  message: "All the news", news });
         }).catch(err => {
             res.status(500).send({
                 message: err.message || "Some error occurred while retrieving news."
