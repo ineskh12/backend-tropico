@@ -1,8 +1,6 @@
 module.exports = (app) => {
     const product = require('../controllers/product.controller.js');
   
-
-
     // Create a new product
     app.post('/product', product.create);
     // Retrieve all product with populate

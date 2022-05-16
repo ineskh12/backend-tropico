@@ -1,7 +1,7 @@
 
 const Notfication = require('../models/notification.model');
 
-var serviceAccount = require("/Users/ines/inesprojects/backend-tropico/tropicobackendv2-firebase-adminsdk-ydgb4-0e2505e37a.json");
+var serviceAccount = require("/Users/ineskhelifi/Desktop/backend-tropico/tropicobackendv2-firebase-adminsdk-ydgb4-0e2505e37a.json");
 var admin = require("firebase-admin");
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),

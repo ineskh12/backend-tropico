@@ -74,6 +74,8 @@ app.get('/', (req, res) => {
 require('./app/routes/ad.routes.js')(app);
 require('./app/routes/user.routes.js')(app);
 require('./app/routes/news.routes.js')(app);
+require('./app/routes/moome.routes.js')(app);
+require('./app/routes/ezzayra.routes.js')(app);
 require('./app/routes/product.routes.js')(app);
 require('./app/routes/notification.routes.js')(app);
 require('./app/routes/auth.routes.js')(app);
