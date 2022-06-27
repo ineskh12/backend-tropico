@@ -18,7 +18,7 @@ exports.create = async(req, res) => {
         image: req.file.filename,  
  
         description:req.body.description,
-        categorie:req.body.categorie,
+ 
 
 
         
@@ -163,9 +163,7 @@ exports.findOne = async(req, res) => {
 exports.update = async (req, res) => {
     const word = await Ezzayra.findById(req.params.adId);
  
-    if (req.body.categorie !== undefined) {
-        word.categorie = req.body.categorie;
-     }
+    
      if (req.body.description !== undefined) {
         word.description = req.body.description;
      }
@@ -173,9 +171,7 @@ exports.update = async (req, res) => {
     if (req.body.titre !== undefined) {
         word.titre = req.body.titre;
      }
-    if (req.body.publishdate !== undefined) {
-        word.url = req.body.publishdate;
-     }
+   
  
      if (req.body.masquer !== undefined) {
         word.masquer = req.body.masquer;

@@ -8,7 +8,7 @@ const MoomeSchema = mongoose.Schema({
     description: {type:String,default:'empty'},
     categorie:{type: Number,default: 1 },
    
-    publishstate:{type: Date,default:false },
+    //publishstate:{type: Date,default:false },
     masquer: {type:Boolean,default:false},
     langue: {type:String,default:'Ar'},
 

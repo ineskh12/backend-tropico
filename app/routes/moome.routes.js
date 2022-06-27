@@ -17,7 +17,7 @@ module.exports = (app) => {
 
     // Update a news with newsId
  
-  app.post('/moome/edit/:adId',uploadFile, moomes.update);
+  app.post('/moome/edit/:newsId',uploadFile, moomes.update);
     // Delete a News with newsId
    app.delete('/moome/:newsId', moomes.delete);
 

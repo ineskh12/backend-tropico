@@ -84,8 +84,8 @@ require("firebase/firestore")
 //console.log(process.env.PORT)
 
 // listen for requests
-app.listen(process.env.PORT || 3001, () => {
-    console.log("Server is listening on port 3001");
+app.listen(process.env.PORT || 5000, () => {
+    console.log("Server is listening on port 5000");
 });
 
 

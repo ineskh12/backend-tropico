@@ -31,7 +31,7 @@ exports.create = async(req, res) => {
        //console.log(data.titre)
   
         res.send(data)
-         
+         console.log(data)
       /*  var message = {
         notification: {
           title: data.titre,
@@ -161,7 +161,8 @@ exports.findOne = async(req, res) => {
 
 
 exports.update = async (req, res) => {
-    const word = await Moome.findById(req.params.adId);
+    const word = await Moome.findById(req.params.newsId)
+     console.log(word)
  
     if (req.body.categorie !== undefined) {
         word.categorie = req.body.categorie;
@@ -189,18 +190,18 @@ exports.update = async (req, res) => {
     .then(word => {
         if(!word) {
             return res.status(404).send({
-                message: "News not found with id " + req.params.newsId
+                message: "Moome News  not found with id " + req.params.newsId
             });
         }
         res.send(word);
     }).catch(err => {
         if(err.kind === 'ObjectId') {
             return res.status(404).send({
-                message: "News not found with id " +req.params.newsId
+                message: " Moome News not found with id " +req.params.newsId
             });                
         }
         return res.status(500).send({
-            message: "Error updating News with id " + req.params.newsId
+            message: "Error updating  Moome News with id " + req.params.newsId
         });
     });
 };
